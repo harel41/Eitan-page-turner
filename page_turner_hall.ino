@@ -2,10 +2,10 @@
 #include <Servo.h>
 
 
-ezButton forwardSwitch(7);  // create ezButton object that attach to pin 7;
-ezButton halleffect(9);  // create ezButton object that attach to pin 9;
-ezButton toggleSwitch(11);  // create ezButton object that attach to pin 11;
-ezButton revarseSwitch(13); // create ezButton object that attach to pin 5; 
+ezButton forwardSwitch(6);  // create ezButton object that attach to pin 7;
+ezButton halleffect(4);  // create ezButton object that attach to pin 9;
+ezButton toggleSwitch(5);  // create ezButton object that attach to pin 11;
+ezButton revarseSwitch(7); // create ezButton object that attach to pin 5; 
 Servo myservo;
 
 bool wasPressed = false;
