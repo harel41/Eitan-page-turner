@@ -10,15 +10,20 @@ Servo myservo;
 
 bool wasPressed = false;
 
+bool arm = false;
+
 bool ended = true;
 
 int count = 0;
 
-int firstTimer = 5300, secondTimer = 4000;
+int firstTimer = 3700, secondTimer = 1000;
 
 int t1 = 0, t2 = 0;
 
 int Timer;
+
+
+
 
 int moveDiriction = 1;
 
@@ -29,6 +34,7 @@ static void resetValues() {
   wasPressed = false;
   count=0;
   Timer = 0;
+  arm = false;
 }
 
 void setup() {
@@ -38,6 +44,7 @@ void setup() {
   revarseSwitch.setDebounceTime(50); // set debounce time to 50 Timereconds
   toggleSwitch.setDebounceTime(50); // set debounce time to 50 Timereconds
   halleffect.setDebounceTime(50); // set debounce time to 50 Timereconds
+
   
   Timer = 0;
 }
@@ -53,25 +60,26 @@ void loop() {
 
    if (halleffect.isPressed() && count <= 2){
     count++;
-    Serial.print("hall is on ");
+    Serial.println("hall is on ");
   }
 
 
   if (toggleSwitch.isPressed()){
-     firstTimer = 5300;
-     secondTimer = 4000;
-     Serial.print("big ");
+     firstTimer = 5900;//Page turn time
+     secondTimer = 2000;//Page return time
+     Serial.println("Big ");
      resetValues();
   }
 
    if (toggleSwitch.isReleased()){
-    Serial.print("small ");
-    firstTimer = 4200;
-    secondTimer = 4200;
+    Serial.println("Small ");
+    firstTimer = 5000;//Page turn time
+    secondTimer = 1200;//Page return time
     resetValues();
   }
 
    if(forwardSwitch.isPressed()){
+    Serial.println("forwardP");
     if (ended) {
        count=0;
       
@@ -82,7 +90,7 @@ void loop() {
   }
 
   if(revarseSwitch.isPressed()){
-    Serial.print("reverse ");
+    Serial.println("reverseP");
     if (ended) {
       count=0;
       
@@ -96,34 +104,41 @@ void loop() {
       myservo.detach();
       myservo.attach(3);
       myservo.write(180 * moveDiriction);
-      Serial.print("blahsdha ");
+      Serial.println("Moving");
       t1 = Timer;
-      Serial.print(t1);
-      Serial.print(Timer);
-
       wasPressed = false;
       }
       if (Timer-t1 >= firstTimer && t1 != 0){
         myservo.detach();
         myservo.attach(3);
         myservo.write(-180 * moveDiriction);
-        Serial.print("blah "); 
-        t1 = 0;
-        t2 = Timer;  
+        Serial.println("Moving back"); 
+        t1 = 0;  
+        arm = true;
   }
 
-  if (Timer-t2 >= secondTimer && t2 != 0){
-          Serial.print("hi");
+  if (halleffect.isPressed() && arm == true){
+          Serial.println("Moving back1");
+          myservo.detach();
+          myservo.attach(3);
+          myservo.write(-180 * moveDiriction);
+          arm = false;
+          t2 = Timer;
+   }
+   if (Timer-t2 >= secondTimer && t2 != 0){
+          Serial.println("Moving forward1");
           myservo.detach();
           myservo.attach(3);
           myservo.write(180 * moveDiriction);
           t2 = 0;
-    }
+    }    
+ 
     if (count >= 2){
         ended = true;
         resetValues();
-        Serial.print("hall is 0 ");
+        Serial.println("hall is 0 - back at the start");
       }
+
 }
 
 
